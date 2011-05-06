@@ -74,7 +74,7 @@ def geo_filter(player, location):
             return player
     return None
 
-"""Find all players based in texas"""
+"""Find all players based in Texas"""
 def texas_filter(player):
     return geo_filter(player, "TX")
 
@@ -82,7 +82,7 @@ def texas_filter(player):
 def dallas_filter(player):
     return geo_filter(player, "Dallas, TX")
 
-"""Find all players based in texas"""
+"""Find all players based in California"""
 def california_filter(player):
     return geo_filter(player, ", CA")
 
