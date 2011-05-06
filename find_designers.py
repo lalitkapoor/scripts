@@ -89,7 +89,7 @@ def california_filter(player):
 #pprint(texas_users)
 
 all_players_names = set()
-find_all('tjtaylor', players=all_players_names, filter=dallas_filter, max_depth=25)
+find_all('idefine', players=all_players_names, filter=dallas_filter, max_depth=25)
 
 output = "username,shots_count,followers_count,likes_received_count\n"
 for name in all_players_names:
@@ -103,8 +103,8 @@ pprint(all_players_names)
 print len(all_players_names)
 
 #write to disk
-os.remove("users.txt")
-users = open('users.txt', "a")
+os.remove("users.csv")
+users = open('users.csv', "a")
 users.write(output)
 users.close()
 
