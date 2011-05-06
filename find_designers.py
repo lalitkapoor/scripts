@@ -49,8 +49,8 @@ def get_following(player, page=1, filter=None, username_only=True):
     
     return results
 
-"""Find all players given a starting player (doesn't include the starting 
-player by default, it will if another user is following the starting player)"""
+"""Find all followers given a starting player recursively (doesn't include the 
+starting player by default, it will if another user is following the starting player)"""
 def find_all(player, players, filter=None, max_depth=0):
     print player
     if max_depth<0:
