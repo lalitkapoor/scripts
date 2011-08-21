@@ -49,10 +49,13 @@ def get_following(player, page=1, filter=None, username_only=True):
     
     return results
 
+count = 0
+
 """Find all followers given a starting player recursively (doesn't include the 
 starting player by default, it will if another user is following the starting player)"""
 def find_all(player, players, filter=None, max_depth=0):
-    print player
+    count+=1
+    print count+":",player
     if max_depth<0:
         return
     
@@ -68,37 +71,71 @@ def find_all(player, players, filter=None, max_depth=0):
         find_all(username, players, filter, max_depth-1)
 
 """Filter a player based on geographical criteria"""
-def geo_filter(player, location):
+def geo_filter(player, locations):
     if player['location']:
-        if location in player['location']:
-            return player
+        ploc = player['location'].lower()
+        for location in locations:
+            if location.lower() in ploc:
+                return player
     return None
 
 """Find all players based in Texas"""
 def texas_filter(player):
-    return geo_filter(player, "TX")
+    return geo_filter(player, ["TX"])
 
 """Find all players based in Dallas, TX"""
-def dallas_filter(player):
-    return geo_filter(player, "Dallas, TX")
+def dallas_surrounding_filter(player):
+    cities = [
+        "Plano",
+        "Flower Mound",
+        "Lewisville",
+        "Southlake",
+        "Highland Village",
+        "Allen",
+        "McKinney",
+        "Frisco",
+        "Denton",
+        "Mesquite",
+        "Garland",
+        "Richardson",
+        "Carrollton",
+        "Grand Prairie",
+        "Arlington",
+        "Grapevine",
+        "Irving",
+        "Coppell",
+        "Colony"
+    ]    
+    short = map(lambda city: city +", TX", cities)
+    lng = map(lambda city: city +", Texas", cities)
+    
+    
+    return geo_filter(player, short+lng+['Dallas', 'Fort Worth'])
+
+"""Find all players based in Austin, TX"""
+def austin_filter(player):
+    return geo_filter(player, ["Austin, TX"])
 
 """Find all players based in California"""
 def california_filter(player):
-    return geo_filter(player, ", CA")
+    return geo_filter(player, [", CA"])
 
 #texas_users = get_following('idefine', filter=texas_filter, username_only=False)
 #pprint(texas_users)
 
 all_players_names = set()
-find_all('idefine', players=all_players_names, filter=dallas_filter, max_depth=25)
+find_all('idefine', players=all_players_names, filter=dallas_surrounding_filter, max_depth=25)
 
-output = "username,shots_count,followers_count,likes_received_count\n"
+output = u"username,shots_count,followers_count,likes_received_count,website_url,twitter\n"
 for name in all_players_names:
     output+=name+","
-    output+=str(all_players_data[name]['shots_count'])+","
-    output+=str(all_players_data[name]['followers_count'])+","
-    output+=str(all_players_data[name]['likes_received_count'])+","
-    output+=str("http://www.dribbble.com/"+name)+"\n"
+    #output+=unicode(all_players_data[name]['name'])+","
+    output+=unicode(all_players_data[name]['shots_count'])+","
+    output+=unicode(all_players_data[name]['followers_count'])+","
+    output+=unicode(all_players_data[name]['likes_received_count'])+","
+    output+=unicode(all_players_data[name]['website_url'])+","
+    output+=unicode(all_players_data[name]['twitter_screen_name'])+","
+    output+=unicode("http://www.dribbble.com/"+name)+"\n"
 
 pprint(all_players_names)
 print len(all_players_names)
