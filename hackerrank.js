@@ -1,5 +1,5 @@
-var MIN = 1400;
-var MAX = 2000;
+var MIN = 1;
+var MAX = 50;
 
 var count = MIN;
 
