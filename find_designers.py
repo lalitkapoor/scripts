@@ -54,8 +54,9 @@ count = 0
 """Find all followers given a starting player recursively (doesn't include the 
 starting player by default, it will if another user is following the starting player)"""
 def find_all(player, players, filter=None, max_depth=0):
+    global count
     count+=1
-    print count+":",player
+    print str(count)+":",player
     if max_depth<0:
         return
     
@@ -145,4 +146,3 @@ os.remove("users.csv")
 users = open('users.csv', "a")
 users.write(output)
 users.close()
-
