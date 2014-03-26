@@ -46,12 +46,12 @@ def get_following(player, page=1, filter=None, username_only=True):
 
     if data['page'] < data['pages']:
         results.extend(get_following(player, page+1, filter, username_only))
-    
+
     return results
 
 count = 0
 
-"""Find all followers given a starting player recursively (doesn't include the 
+"""Find all followers given a starting player recursively (doesn't include the
 starting player by default, it will if another user is following the starting player)"""
 def find_all(player, players, filter=None, max_depth=0):
     global count
@@ -59,17 +59,21 @@ def find_all(player, players, filter=None, max_depth=0):
     print str(count)+":",player
     if max_depth<0:
         return
-    
+
     #players.add(player)
+
     new_users = get_following(player, filter=filter, username_only=False)
-    new_usernames = set([user['username'] for user in new_users]).difference(players)
-    players.update(new_usernames)
-    
-    for user in new_users:
-        all_players_data[user['username']] = user
-    
-    for username in new_usernames:
-        find_all(username, players, filter, max_depth-1)
+    new_usernames = set()
+    if new_users:
+        new_usernames = set([user['username'] for user in new_users]).difference(players)
+        players.update(new_usernames)
+
+        for user in new_users:
+            all_players_data[user['username']] = user
+
+    if new_usernames:
+        for username in new_usernames:
+            find_all(username, players, filter, max_depth-1)
 
 """Filter a player based on geographical criteria"""
 def geo_filter(player, locations):
@@ -106,11 +110,11 @@ def dallas_surrounding_filter(player):
         "Irving",
         "Coppell",
         "Colony"
-    ]    
+    ]
     short = map(lambda city: city +", TX", cities)
     lng = map(lambda city: city +", Texas", cities)
-    
-    
+
+
     return geo_filter(player, short+lng+['Dallas', 'Fort Worth'])
 
 """Find all players based in Austin, TX"""
@@ -142,7 +146,10 @@ pprint(all_players_names)
 print len(all_players_names)
 
 #write to disk
-os.remove("users.csv")
+try:
+    os.remove("users.csv")
+except OSError:
+    pass
 users = open('users.csv', "a")
 users.write(output)
 users.close()
